@@ -752,7 +752,7 @@ function renderMap() {
     });
   });
   document.getElementById('submitMapBtn').disabled = Object.keys(answers).length < questions.length;
-  document.querySelector('.map-popup').style.display = _allDone ? 'none' : '';
+  document.querySelector('.map-popup').style.display = (Object.keys(answers).length >= questions.length) ? 'none' : '';
 }
 
 document.getElementById('mapIconBtn').addEventListener('click', function() { goTo('screen-map'); });
