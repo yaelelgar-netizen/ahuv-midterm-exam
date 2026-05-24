@@ -704,6 +704,11 @@ function handleEntry() {
     err.textContent = 'יש להזין מספר סידורי תקין בין 01 ל-28 (שתי ספרות)';
     return;
   }
+  var _lsKey = 'exam_done_' + val;
+  if (localStorage.getItem(_lsKey)) {
+    err.textContent = 'מספר סידורי זה כבר שימש להגשה. לפרטים פנה למרצה.';
+    return;
+  }
   err.textContent = '';
   serial    = val;                // already "01"–"28"
   version   = num <= 14 ? 'א' : 'ב';
@@ -947,6 +952,7 @@ var examFinalized = false;
 function finalizeExam() {
   if (examFinalized) return;
   examFinalized = true;
+  localStorage.setItem('exam_done_' + serial, new Date().toISOString());
   var result = scoreExam();
   // Student-facing screen stays as-is (no grade, no feedback by design).
   SCORM.report(result);
