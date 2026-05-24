@@ -76,10 +76,11 @@ body{font-family:'Assistant',Arial,sans-serif;min-height:100vh;overflow-x:hidden
 .q-circle{width:72px;height:72px;border-radius:50%;border:2.5px solid #006262;color:#006262;font-weight:700;font-size:2.1rem;display:flex;align-items:center;justify-content:center;cursor:pointer;background:white;user-select:none;position:relative;box-shadow:0 6px 16px rgba(0,80,80,0.28),0 3px 6px rgba(0,0,0,0.13);}
 .q-circle:hover{background:#e0f5f5;}
 .q-circle.answered{background:#006262;border:5px solid #ccc;color:white;}
-.flag-icon-map{display:none;position:absolute;top:-32px;left:calc(50% + 5px);transform:translateX(-50%);width:34px;height:38px;object-fit:contain;pointer-events:none;z-index:10;}
+.flag-icon-map{display:block;position:absolute;top:-32px;left:calc(50% + 5px);transform:translateX(-50%);width:34px;height:38px;object-fit:contain;pointer-events:auto;z-index:10;opacity:0.18;cursor:pointer;transition:opacity 0.15s;}
 
 .q-circle span{position:relative;z-index:1;}
-.q-circle.flagged .flag-icon-map{display:block;}
+.q-circle .flag-icon-map:hover{opacity:0.6;}
+.q-circle.flagged .flag-icon-map{opacity:1;}
 .map-bottombar{position:fixed;bottom:0;left:0;right:0;display:none;align-items:center;justify-content:space-between;padding:1rem 1.8rem 1.2rem;direction:rtl;z-index:100;}
 .map-bottom-icons{display:flex;gap:0.7rem;}
 .icon-btn{width:54px;height:54px;background:#e7e6e6;border:none;padding:10px;cursor:pointer;border-radius:12px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.18);}
@@ -306,6 +307,7 @@ body{font-family:'Assistant',Arial,sans-serif;min-height:100vh;overflow-x:hidden
         <div class="bullet-group">
           <div class="bullet-item"><div class="bullet-dot"></div><span>לראות על אילו שאלות כבר עניתם</span></div>
           <div class="bullet-item"><div class="bullet-dot"></div><span>לראות אילו שאלות עדיין לא נענו</span></div>
+          <div class="bullet-item"><div class="bullet-dot"></div><span>לסמן שאלות שברצונכם לחזור אליהן</span></div>
 
         </div>
         <div class="para-gap"></div>
@@ -410,6 +412,7 @@ body{font-family:'Assistant',Arial,sans-serif;min-height:100vh;overflow-x:hidden
       <div class="subtitle">סיימתם את המבחן</div>
       <button class="exit-btn" id="exitBtn">יציאה</button>
     </div>
+    <img src="closing_slide_image1.png" alt="" style="width:100%;max-width:860px;border-radius:10px;margin-top:0.5rem;">
   </div>
 </div>
 
@@ -762,6 +765,16 @@ function renderMap() {
   grid.querySelectorAll('.q-circle').forEach(function(el) {
     el.addEventListener('click', function() {
       openQuestion(parseInt(el.getAttribute('data-idx')));
+    });
+  });
+  grid.querySelectorAll('.flag-icon-map').forEach(function(el) {
+    el.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var circle = el.closest('.q-circle');
+      var qIdx = parseInt(circle.getAttribute('data-idx'));
+      var q = questions[qIdx];
+      flagged[q.id] = !flagged[q.id];
+      renderMap();
     });
   });
   document.getElementById('submitMapBtn').disabled = Object.keys(answers).length < questions.length;
