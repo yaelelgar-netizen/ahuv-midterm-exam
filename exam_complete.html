@@ -415,7 +415,8 @@ body{font-family:'Assistant',Arial,sans-serif;min-height:100vh;overflow-x:hidden
 // IMPORTANT: replace APPS_SCRIPT_URL below with the URL of the deployed
 // Google Apps Script Web App (instructions in README_deployment.md).
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby4VQs-_FwKCj9lYbBcCsEXKbmMK7XY4iEJcLkOKRD2LeVNaagwmxDOd5MmZKBWyJp2/exec';
-const MAX_SCORE       = 74;
+const MAX_SCORE             = 74;
+const LIMIT_TO_ONE_ATTEMPT  = false;  // Change to true when exam goes live to block re-entry
 
 // Correct answers, keyed by ORIGINAL question number (1–27).
 const ANSWER_KEY = {
@@ -704,10 +705,12 @@ function handleEntry() {
     err.textContent = 'יש להזין מספר סידורי תקין בין 01 ל-28 (שתי ספרות)';
     return;
   }
-  var _lsKey = 'exam_done_' + val;
-  if (localStorage.getItem(_lsKey)) {
-    err.textContent = 'מספר סידורי זה כבר שימש להגשה. לפרטים פנה למרצה.';
-    return;
+  if (LIMIT_TO_ONE_ATTEMPT) {
+    var _lsKey = 'exam_done_' + val;
+    if (localStorage.getItem(_lsKey)) {
+      err.textContent = 'מספר סידורי זה כבר שימש להגשה. לפרטים פנה למרצה.';
+      return;
+    }
   }
   err.textContent = '';
   serial    = val;                // already "01"–"28"
